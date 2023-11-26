@@ -8,8 +8,8 @@ class Simulation:
     
     def __init__(self, size: int) -> None:
         self.area = Area(size)
-        self.wolf_A = Wolf(self.area, 'A')
-        self.wolf_B = Wolf(self.area, 'B')
+        self.wolf_A = Wolf(self.area, 'A', 10)
+        self.wolf_B = Wolf(self.area, 'B', 10)
     
     def tick(self) -> None:
         self.wolf_A.tick()
@@ -19,10 +19,22 @@ class Simulation:
         return str(self.area)
 
 
-simulation = Simulation(20)
+simulation = Simulation(100)
 
-for _ in range(15):
+for i in range(10000):
     simulation.tick()
+    if i % 1000 == 0:
+        print(simulation)
+    continue
+    print(simulation)
+    print(simulation.wolf_A.discomfort)
+    print(simulation.wolf_B.discomfort)
+print()
+for i in range(10):
+    simulation.tick()
+    if i % 1000 == 0 or True:
+        print(simulation)
+    continue
     print(simulation)
     print(simulation.wolf_A.discomfort)
     print(simulation.wolf_B.discomfort)
