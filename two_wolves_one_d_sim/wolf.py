@@ -78,7 +78,7 @@ class Wolf(WolfInterface):
             self.mark()
             direction *= -1
         
-        if self.direction_towards_den(direction):
+        if not self.on_way_back and self.direction_towards_den(direction):
             if self.decide_whether_to_return():
                 self.on_way_back = True
                 self.mark()
@@ -102,7 +102,6 @@ class Wolf(WolfInterface):
         return random.choice([-1, 1])
     
     def linear_direction_generator(self) -> int:
-        # ! too much RLU
         if self.location == self.den.get_location():
             return self.uniform_direction_generator()
         

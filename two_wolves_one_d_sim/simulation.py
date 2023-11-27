@@ -24,4 +24,3 @@ simulation = Simulation(50)
 for _ in range(20):
     simulation.tick()
     print(simulation)
-    
