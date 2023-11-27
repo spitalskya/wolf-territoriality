@@ -95,11 +95,21 @@ class Wolf(WolfInterface):
     
     def get_direction(self) -> int:
         """Gets direction based on some generator"""
-        return self.uniform_direction_generator()
+        return self.linear_direction_generator()
     
     def uniform_direction_generator(self) -> int:
         """Returns uniform random direction"""
         return random.choice([-1, 1])
+    
+    def linear_direction_generator(self) -> int:
+        # ! too much RLU
+        if self.location == self.den.get_location():
+            return self.uniform_direction_generator()
+        
+        distance_from_den: int = abs(self.location - self.den.get_location())
+        if random.random() < distance_from_den/10:
+            return self.get_direction_towards_den()
+        return -self.get_direction_towards_den()
     
     def direction_towards_den(self, direction: int) -> bool:
         """Returns whether given direction is towards den"""

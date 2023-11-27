@@ -23,4 +23,4 @@ class Mark(MarkInterface):
         return self.location
     
     def __str__(self) -> str:
-        return ''
+        return '.'

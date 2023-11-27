@@ -19,8 +19,9 @@ class Simulation:
         return str(self.area)
 
 
-simulation = Simulation(100)
+simulation = Simulation(50)
 
-for _ in range(10):
-    for _ in range(1000000):
-        simulation.tick()
+for _ in range(20):
+    simulation.tick()
+    print(simulation)
+    
