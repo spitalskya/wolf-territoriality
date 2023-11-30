@@ -25,3 +25,7 @@ class DenInterface(ABC):
     @abstractmethod
     def get_location(self) -> int:
         pass
+    
+    @abstractmethod
+    def set_location(self, loc: int) -> None:
+        pass

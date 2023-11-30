@@ -25,6 +25,10 @@ class Area:
         self.area[loc_before].remove(wolf)
         self.area[loc_after].append(wolf)
     
+    def move_den(self, den: DenInterface, loc_before: int, loc_after: int) -> None:
+        self.area[loc_before].remove(den)
+        self.area[loc_after].append(den)
+    
     def get_tile(self, loc: int) -> List[WolfInterface | MarkInterface | DenInterface]:
         if loc < 0 or loc >= len(self.area):
             return []
@@ -36,10 +40,12 @@ class Area:
     def __str__(self) -> str:
         state: str = ''
         for tile in self.area:
-            if tile == []:
+            if tile == [] or all(isinstance(item, MarkInterface) for item in tile):
                 state += '_'
             else:
                 for obj in tile:
+                    if isinstance(obj, MarkInterface): continue
                     state += str(obj)
+                    break
             state += '|'
         return state[:-1]

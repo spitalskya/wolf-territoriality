@@ -11,5 +11,8 @@ class Den(DenInterface):
     def get_location(self) -> int:
         return self.location
     
+    def set_location(self, loc: int) -> None:
+        self.location = loc
+    
     def __str__(self) -> str:
         return self.tag
