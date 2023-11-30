@@ -1,10 +1,10 @@
 from __future__ import annotations
 from typing import List
-from two_wolves_one_d_sim.interfaces import WolfInterface, MarkInterface
-from two_wolves_one_d_sim.den import Den
+from two_wolves_one_d_sim.interfaces import WolfInterface, MarkInterface, DenInterface
+
 
 class Area:
-    area: List[List[WolfInterface | MarkInterface | Den]]
+    area: List[List[WolfInterface | MarkInterface | DenInterface]]
     
     def __init__(self, size: int) -> None:
         self.area = [[] for _ in range(size)]
@@ -12,7 +12,7 @@ class Area:
     def put_wolf(self, wolf: WolfInterface, location: int) -> None:
         self.area[location].append(wolf)
     
-    def put_den(self, den: Den, location: int) -> None:
+    def put_den(self, den: DenInterface, location: int) -> None:
         self.area[location].append(den)
     
     def put_mark(self, mark: MarkInterface, location: int) -> None:
@@ -25,7 +25,7 @@ class Area:
         self.area[loc_before].remove(wolf)
         self.area[loc_after].append(wolf)
     
-    def get_tile(self, loc: int) -> List[WolfInterface | MarkInterface | Den]:
+    def get_tile(self, loc: int) -> List[WolfInterface | MarkInterface | DenInterface]:
         if loc < 0 or loc >= len(self.area):
             return []
         return self.area[loc]

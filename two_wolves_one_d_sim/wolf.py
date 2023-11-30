@@ -1,14 +1,14 @@
 from __future__ import annotations
 from typing import List, Optional
 import random
-from two_wolves_one_d_sim.interfaces import WolfInterface, MarkInterface
+from two_wolves_one_d_sim.interfaces import WolfInterface, MarkInterface, DenInterface
 from two_wolves_one_d_sim.mark import Mark
 from two_wolves_one_d_sim.area import Area
 from two_wolves_one_d_sim.den import Den
 
 
 class Wolf(WolfInterface):
-    den: Den                        # location of the den
+    den: DenInterface               # location of the den
     location: int                   # location of the wolf
     tag: str                        # distinct tag of the wolf
     
@@ -129,7 +129,7 @@ class Wolf(WolfInterface):
         """Looks one tile in direction dir
         if there is another wolf, returns True
         """
-        tile: List[WolfInterface | MarkInterface | Den]
+        tile: List[WolfInterface | MarkInterface | DenInterface]
         tile = self.area.get_tile(self.location + 2 * direction)
         tile = self.area.get_tile(self.location + direction) if tile == [] else tile
         
@@ -141,10 +141,10 @@ class Wolf(WolfInterface):
         """Looks one tile in direction
         if there is mark of another wolf, returns True
         """
-        tile: List[WolfInterface | MarkInterface | Den] 
+        tile: List[WolfInterface | MarkInterface | DenInterface] 
         tile = self.area.get_tile(self.location + direction)
         
-        item: WolfInterface | MarkInterface | Den
+        item: WolfInterface | MarkInterface | DenInterface
         for item in tile:
             if isinstance(item, MarkInterface):
                 if item.get_tag() != self.mark_tag:

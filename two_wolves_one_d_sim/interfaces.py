@@ -19,3 +19,9 @@ class MarkInterface(ABC):
     @abstractmethod
     def get_location(self) -> int:
         pass
+
+class DenInterface(ABC):
+    
+    @abstractmethod
+    def get_location(self) -> int:
+        pass

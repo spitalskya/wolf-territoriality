@@ -1,4 +1,6 @@
-class Den:
+from two_wolves_one_d_sim.interfaces import DenInterface
+
+class Den(DenInterface):
     tag: str
     location: int
     

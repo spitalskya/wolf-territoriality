@@ -7,4 +7,6 @@ check: FORCE
 lint: FORCE
 	pylint two_wolves_one_d_sim/
 
+all: FORCE check lint
+
 FORCE: ;
