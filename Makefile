@@ -1,5 +1,5 @@
 sim: FORCE
-	python -m two_wolves_one_d_sim.simulation
+	python -m two_wolves_one_d_sim.simulate
 
 check: FORCE
 	mypy two_wolves_one_d_sim --strict

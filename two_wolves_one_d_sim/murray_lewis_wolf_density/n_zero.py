@@ -13,11 +13,10 @@ def difference_function(A, c_u, d_u, beta, x_u) -> float:
     result, _ = quad(integrand, lower, upper, args=(c_u, d_u, beta, x_u))
     return abs(A*result - 1)
 
-def determine_A(c_u, d_u, beta, x_u) -> None:
+def determine_A(c_u, d_u, beta, x_u) -> float:
     result = minimize_scalar(difference_function, args=(c_u, d_u, beta, x_u))
     optimal_constant = result.x
-
-    print(f"The optimal constant is: {optimal_constant}")
+    return optimal_constant
 
 if __name__ == '__main__':
     determine_A(1, 0.3, 0.05, 6)

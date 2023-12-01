@@ -5,6 +5,7 @@ from two_wolves_one_d_sim.interfaces import WolfInterface, MarkInterface, DenInt
 from two_wolves_one_d_sim.mark import Mark
 from two_wolves_one_d_sim.area import Area
 from two_wolves_one_d_sim.den import Den
+from two_wolves_one_d_sim.murray_lewis_wolf_density.wolf_density_n_zero import get_step
 
 
 class Wolf(WolfInterface):
@@ -90,6 +91,7 @@ class Wolf(WolfInterface):
         if new_location < 0 or new_location >= len(self.area):
             self.pressure += direction
             self.discomfort += 0.01
+            self.on_way_back = True
             new_location = self.location
             
         self.area.move_wolf(self, self.location, new_location)
@@ -101,7 +103,7 @@ class Wolf(WolfInterface):
     
     def get_direction(self) -> int:
         """Gets direction based on some generator"""
-        return self.uniform_direction_generator()
+        return self.murray_lewis_direction_generator()
     
     def uniform_direction_generator(self) -> int:
         """Returns uniform random direction"""
@@ -112,9 +114,12 @@ class Wolf(WolfInterface):
             return self.uniform_direction_generator()
         
         distance_from_den: int = abs(self.location - self.den.get_location())
-        if random.random() < distance_from_den/15:
+        if random.random() < distance_from_den/10:
             return self.get_direction_towards_den()
         return -self.get_direction_towards_den()
+    
+    def murray_lewis_direction_generator(self) -> int:
+        return get_step(self.location, self.den.get_location())
     
     def direction_towards_den(self, direction: int) -> bool:
         """Returns whether given direction is towards den"""
@@ -128,7 +133,7 @@ class Wolf(WolfInterface):
     
     def decide_whether_to_return(self) -> bool:
         """Decides, if the wolf should return to den"""
-        return True
+        return False
     
     
     def look_for_wolves(self, direction: int) -> bool:
