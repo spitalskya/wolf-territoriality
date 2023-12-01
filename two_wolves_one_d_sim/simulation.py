@@ -1,4 +1,5 @@
 import random
+import multiprocessing
 from two_wolves_one_d_sim.wolf import Wolf
 from two_wolves_one_d_sim.area import Area
 
@@ -26,24 +27,24 @@ class Simulation:
     def __str__(self) -> str:
         return str(self.area)
 
-with open('two_wolves_one_d_sim/loc_start.csv', 'w') as file:
-    file.write('A,B\n')
-with open('two_wolves_one_d_sim/loc_end.csv', 'w') as file:
-    file.write('A,B\n')
+"""with open('two_wolves_one_d_sim/loc_start.csv', 'w') as file:
+    file.write('A,B\n')"""
+"""with open('two_wolves_one_d_sim/loc_end.csv', 'w') as file:
+    file.write('A,B\n')"""
 
-
-for i in range(10):
-    simulation = Simulation(40)
-    with open('two_wolves_one_d_sim/loc_start.csv', 'a') as file:
-        file.write(f'{simulation.wolf_a.location},{simulation.wolf_b.location}\n')
+def run_simulation(simulation: Simulation) -> tuple[int, int]:
     for _ in range(100000):
         simulation.tick()
-        
-        """
-        print(simulation)
-        print(simulation.wolf_a.discomfort, simulation.wolf_a.pressure)
-        print(simulation.wolf_b.discomfort, simulation.wolf_b.pressure)
-        """
-    with open('two_wolves_one_d_sim/loc_end.csv', 'a') as file:
-        file.write(f'{simulation.wolf_a.location},{simulation.wolf_b.location}\n')
-    print(i)
+    return (simulation.wolf_a.den.get_location(), simulation.wolf_b.den.get_location())
+
+if __name__ == "__main__":
+    with open('two_wolves_one_d_sim/loc_end.csv', 'w') as file:
+        file.write('A,B\n')
+    for i in range(5):
+        pool = multiprocessing.Pool()
+        outputs = pool.map(run_simulation, [Simulation(30) for _ in range(8)])
+        pool.close()
+        with open('two_wolves_one_d_sim/loc_end.csv', 'a') as file:
+            for item in outputs:
+                a, b = item
+                file.write(f'{a},{b}\n')

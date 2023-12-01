@@ -89,7 +89,7 @@ class Wolf(WolfInterface):
         new_location: int = self.location + direction
         if new_location < 0 or new_location >= len(self.area):
             self.pressure += direction
-            #self.discomfort += 0.01
+            self.discomfort += 0.01
             new_location = self.location
             
         self.area.move_wolf(self, self.location, new_location)
@@ -101,7 +101,7 @@ class Wolf(WolfInterface):
     
     def get_direction(self) -> int:
         """Gets direction based on some generator"""
-        return self.linear_direction_generator()
+        return self.uniform_direction_generator()
     
     def uniform_direction_generator(self) -> int:
         """Returns uniform random direction"""
