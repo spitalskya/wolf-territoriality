@@ -44,7 +44,8 @@ class Area:
                 state += '_'
             else:
                 for obj in tile:
-                    if isinstance(obj, MarkInterface): continue
+                    if isinstance(obj, MarkInterface): 
+                        continue
                     state += str(obj)
                     break
             state += '|'
