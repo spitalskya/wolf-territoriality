@@ -40,7 +40,7 @@ def run_simulation(simulation: Simulation) -> tuple[int, int]:
 if __name__ == "__main__":
     with open('two_wolves_one_d_sim/loc_end.csv', 'w') as file:
         file.write('A,B\n')
-    for i in range(5):
+    for i in range(30000):
         pool = multiprocessing.Pool()
         outputs = pool.map(run_simulation, [Simulation(30) for _ in range(8)])
         pool.close()

@@ -1,0 +1,2 @@
+Name,Runs,AreaSize,DirectionGeneration,MarkDuration,DiscomfortWolf,DiscomfortMark,DiscomfortBoundary,Note
+loc_end_uniform.csv,47569,30,uniform,10,0.1,0.01,0.01,moving den by one tile depending on the number of interactions from both sides
