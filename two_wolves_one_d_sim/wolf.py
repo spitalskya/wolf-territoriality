@@ -1,11 +1,12 @@
 from __future__ import annotations
 from typing import List, Optional
 import random
+from math import e
 from two_wolves_one_d_sim.interfaces import WolfInterface, MarkInterface, DenInterface
 from two_wolves_one_d_sim.mark import Mark
 from two_wolves_one_d_sim.area import Area
 from two_wolves_one_d_sim.den import Den
-from two_wolves_one_d_sim.murray_lewis_wolf_density.wolf_density_n_zero import get_step
+# from two_wolves_one_d_sim.murray_lewis_wolf_density.wolf_density_n_zero import get_step
 
 
 class Wolf(WolfInterface):
@@ -207,3 +208,29 @@ class Wolf(WolfInterface):
     
     def __str__(self) -> str:
         return self.tag
+
+def probability_density(x, x_u):
+    global c_u, d_u, beta, A
+    return A / (cosh(beta*(x - x_u)))**((c_u)/(beta*d_u))
+
+def cosh(x) -> int:
+    return (e**x + e**(-x)) / 2
+
+def get_step(current_location, den_location) -> int:
+    prob_left = probability_density(current_location - 1, den_location)
+    prob_right = probability_density(current_location + 1, den_location)
+
+    # Normalize probabilities to ensure they sum to 1
+    total_prob = prob_left + prob_right
+    prob_left /= total_prob
+    prob_right /= total_prob
+
+    # Generate a random step based on the normalized probabilities
+    # step = random.choice([-1, 1], p=[prob_left, prob_right])
+    step = -1 if random.random() < prob_left else 1
+    return step
+
+c_u = 1
+d_u = 0.3
+beta = 0.05
+A = 0.1622579 

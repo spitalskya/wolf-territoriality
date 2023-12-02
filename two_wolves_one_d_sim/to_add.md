@@ -1,4 +1,5 @@
 # Things to add
 
-- vyhýbanie sa norám
-- "odrazenie sa" od kraju - `look_for_boundary`
+## otázky
+- prečo pri `murray_lewis_size_40` sú dominantné $[7,20]$ a $[20, 32]$?
+    - vidno, že si udržujú nejakú buffer zone
