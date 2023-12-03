@@ -11,7 +11,7 @@ if __name__ == "__main__":
     with open('two_wolves_one_d_sim/loc_end_murray_lewis_size_40_smaller_beta.csv', 'w', encoding='utf-8') as file:
         file.write('A,B\n')
     
-    for _ in range(3750):
+    for i in range(3750):
         with multiprocessing.Pool(processes=8) as pool:        
             outputs = pool.map(run_simulation, [Simulation(30) for _ in range(8)])
     
@@ -19,3 +19,6 @@ if __name__ == "__main__":
             for item in outputs:
                 a, b = item
                 file.write(f'{a},{b}\n')
+
+        if i % 100 == 0:
+            print(i)
