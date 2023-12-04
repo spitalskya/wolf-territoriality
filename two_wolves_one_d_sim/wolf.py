@@ -23,8 +23,15 @@ class Wolf(WolfInterface):
     area: Area                      # reference to shared area
     on_way_back: bool               # if the wolf is returning to its den
     
+    discomfort_constants: dict[str, float]
+    
+    murray_lewis_density_parameters: dict[str, float] | None
+    
     def __init__(self, area: Area, tag: str, den_location: int,
-                 mark_duration: int, mark_tag: Optional[str] = None) -> None:
+                 mark_duration: int, mark_tag: Optional[str] = None,
+                 discomfort_constants: dict[str, float] | None = None,
+                 murray_lewis_density_parameters: dict[str, float] | None = None) -> None:
+        
         self.area = area
         self.tag = tag
         self.discomfort = 0
@@ -38,9 +45,21 @@ class Wolf(WolfInterface):
         self.location = self.den.get_location()
         self.on_way_back = False
         
+        if discomfort_constants:
+            self.discomfort_constants = discomfort_constants
+        else:
+            self.discomfort_constants = {
+                'wolf': 0.1,
+                'den': 0.1,
+                'mark': 0.01,
+                'boundary': 0.01
+            }
+        
+        self.murray_lewis_density_parameters = murray_lewis_density_parameters
+
         self.area.put_den(self.den, self.den.get_location())
         self.area.put_wolf(self, self.location)
-    
+
     def tick(self) -> None:
         """
         zostarnú marks
@@ -91,7 +110,7 @@ class Wolf(WolfInterface):
         new_location: int = self.location + direction
         if new_location < 0 or new_location >= len(self.area):
             self.pressure += direction
-            self.discomfort += 0.01
+            self.discomfort += self.discomfort_constants['boundary']
             self.on_way_back = True
             new_location = self.location
             
@@ -104,7 +123,10 @@ class Wolf(WolfInterface):
     
     def get_direction(self) -> int:
         """Gets direction based on some generator"""
+        if self.murray_lewis_density_parameters is None:
+            return self.uniform_direction_generator()
         return self.murray_lewis_direction_generator()
+        
     
     def uniform_direction_generator(self) -> int:
         """Returns uniform random direction"""
@@ -120,7 +142,7 @@ class Wolf(WolfInterface):
         return -self.get_direction_towards_den()
     
     def murray_lewis_direction_generator(self) -> int:
-        return get_step(self.location, self.den.get_location())
+        return get_step(self.location, self.den.get_location(), self.murray_lewis_density_parameters)
     
     def direction_towards_den(self, direction: int) -> bool:
         """Returns whether given direction is towards den"""
@@ -147,12 +169,12 @@ class Wolf(WolfInterface):
         
         for item in tile:
             if isinstance(item, WolfInterface):
-                self.discomfort += 0.1
+                self.discomfort += self.discomfort_constants['wolf']
                 self.pressure += direction
                 return True
             if isinstance(item, DenInterface):
                 if item != self.den:
-                    self.discomfort += 0.1
+                    self.discomfort += self.discomfort_constants['den']
                     self.pressure += direction
                     return True
         return False
@@ -168,7 +190,7 @@ class Wolf(WolfInterface):
         for item in tile:
             if isinstance(item, MarkInterface):
                 if item.get_tag() != self.mark_tag:
-                    self.discomfort += 0.01
+                    self.discomfort += self.discomfort_constants['mark']
                     self.pressure += direction
                     return True
         return False
@@ -209,16 +231,20 @@ class Wolf(WolfInterface):
     def __str__(self) -> str:
         return self.tag
 
-def probability_density(x, x_u):
-    global c_u, d_u, beta, A
-    return A / (cosh(beta*(x - x_u)))**((c_u)/(beta*d_u))
+def probability_density(x, x_u, density_parameters):
+    c_u = density_parameters['c_u']
+    d_u = density_parameters['d_u']
+    beta = density_parameters['beta']
+    a = density_parameters['A']
+    
+    return a / (cosh(beta*(x - x_u)))**((c_u)/(beta*d_u))
 
 def cosh(x) -> int:
     return (e**x + e**(-x)) / 2
 
-def get_step(current_location, den_location) -> int:
-    prob_left = probability_density(current_location - 1, den_location)
-    prob_right = probability_density(current_location + 1, den_location)
+def get_step(current_location, den_location, density_parameters) -> int:
+    prob_left = probability_density(current_location - 1, den_location, density_parameters)
+    prob_right = probability_density(current_location + 1, den_location, density_parameters)
 
     # Normalize probabilities to ensure they sum to 1
     total_prob = prob_left + prob_right
@@ -229,8 +255,3 @@ def get_step(current_location, den_location) -> int:
     # step = random.choice([-1, 1], p=[prob_left, prob_right])
     step = -1 if random.random() < prob_left else 1
     return step
-
-c_u = 1
-d_u = 0.3
-beta = 0.01
-A = 0.0727819   

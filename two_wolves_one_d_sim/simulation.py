@@ -7,15 +7,27 @@ class Simulation:
     wolf_b: Wolf
     area: Area
     
-    def __init__(self, size: int) -> None:
+    def __init__(self, size: int, 
+                 mark_duration: int = 10,
+                 discomfort_constants: dict[str, float] | None = None,
+                 murray_lewis_density_parameters: dict[str, float] | None = None) -> None:
+        
         self.area = Area(size)
         den_location_a: int = random.randint(0, size - 2)
         den_location_b: int = random.randint(1, size - 1)
         while den_location_a >= den_location_b:
+            den_location_a = random.randint(0, size - 2)
             den_location_b = random.randint(1, size - 1)
         
-        self.wolf_a = Wolf(area=self.area, tag='A', den_location=den_location_a, mark_duration=10)
-        self.wolf_b = Wolf(area=self.area, tag='B', den_location=den_location_b, mark_duration=10)
+        self.wolf_a = Wolf(area=self.area, tag='A', den_location=den_location_a, 
+                           mark_duration=mark_duration,
+                           discomfort_constants=discomfort_constants,
+                           murray_lewis_density_parameters=murray_lewis_density_parameters)
+        
+        self.wolf_b = Wolf(area=self.area, tag='B', den_location=den_location_b, 
+                           mark_duration=mark_duration,
+                           discomfort_constants=discomfort_constants,
+                           murray_lewis_density_parameters=murray_lewis_density_parameters)
     
     def tick(self) -> None:
         ticks = [self.wolf_a.tick, self.wolf_b.tick]
