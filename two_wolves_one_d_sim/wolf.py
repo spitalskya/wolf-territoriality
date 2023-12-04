@@ -232,5 +232,5 @@ def get_step(current_location, den_location) -> int:
 
 c_u = 1
 d_u = 0.3
-beta = 0.05
+beta = 0.01
 A = 0.0727819   
