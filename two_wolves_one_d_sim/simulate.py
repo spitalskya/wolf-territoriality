@@ -24,7 +24,7 @@ if __name__ == "__main__":
         'A': 0.1622579 
     }
 
-    runs = 8
+    runs = 300000
     processes = 8
 
     with open(f'two_wolves_one_d_sim/{file_name}', 'w', encoding='utf-8') as file:
