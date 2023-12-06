@@ -1,15 +1,16 @@
 import multiprocessing
-from two_wolves_one_d_sim.simulation import Simulation
+from two_wolves_one_d_sim.simulation_three_wolves import Simulation
 
 
 def run_simulation(simulation: Simulation) -> tuple[int, int]:
     for _ in range(100000):
         simulation.tick()
-    return (simulation.wolf_a.den.get_location(), simulation.wolf_b.den.get_location())
+    return (simulation.wolf_a.den.get_location(), simulation.wolf_b.den.get_location(), 
+            simulation.wolf_c.den.get_location())
 
 if __name__ == "__main__":
-    file_name = 'strong_wolf_interaction_discomfort' + '.csv'
-    size = 30
+    file_name = 'three_wolves' + '.csv'
+    size = 40
     mark_duration = 10
     discomfort_constants = {
         'wolf': 0.1,
@@ -28,7 +29,7 @@ if __name__ == "__main__":
     processes = 8
 
     with open(f'two_wolves_one_d_sim/{file_name}', 'w', encoding='utf-8') as file:
-        file.write('A,B\n')
+        file.write('A,B,C\n')
     
     for i in range(runs // processes):
         with multiprocessing.Pool(processes=processes) as pool:        
@@ -44,8 +45,8 @@ if __name__ == "__main__":
     
         with open(f'two_wolves_one_d_sim/{file_name}', 'a', encoding='utf-8') as file:
             for item in outputs:
-                a, b = item
-                file.write(f'{a},{b}\n')
+                a, b, c = item
+                file.write(f'{a},{b},{c}\n')
 
         if i % 100 == 0:
             print(i)
