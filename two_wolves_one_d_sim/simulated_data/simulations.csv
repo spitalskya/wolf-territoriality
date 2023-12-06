@@ -1,7 +1,8 @@
-Name,Runs,ticks,AreaSize,DirectionGeneration,MarkDuration,DiscomfortWolf,DiscomfortMark,DiscomfortBoundary,c_u,d_u,beta,n,Note
-loc_end_uniform.csv,47568,100000,30,uniform,10,0.1,0.01,0.01,,,,,moving den by one tile depending on the number of interactions from both sides
-loc_end_murray_lewis.csv,46016,100000,30,murray_lewis,10,0.1,0.01,0.01,1,0.3,0.05,0,
-loc_end_murray_lewis_size_40.csv,25000,100000,40,murray_lewis,10,0.1,0.01,0.01,1,0.3,0.05,0,
-loc_end_murray_lewis_size_40_smaller_beta.csv,30000,100000,30,murray_lewis,10,0.1,0.01,0.01,1,0.3,0.01,0,A=0.072819
-loc_end_murray_lewis_no_marks.csv,30000,100000,30,murray_lewis,10,0.1,0.01,0.01,1,0.3,0.05,0,A=0.1622579
-long_mark_duration.csv,39864,100000,30,murray_lewis,100,0.1,0.01,0.01,1,0.3,0.05,0,A=0.1622579
+Name,Runs,ticks,AreaSize,DirectionGeneration,MarkDuration,DiscomfortWolf,DiscomfortDen,DiscomfortMark,DiscomfortBoundary,c_u,d_u,beta,n,Note
+loc_end_uniform.csv,47568,100000,30,uniform,10,0.1,0.1,0.01,0.01,,,,,moving den by one tile depending on the number of interactions from both sides
+loc_end_murray_lewis.csv,46016,100000,30,murray_lewis,10,0.1,0.1,0.01,0.01,1,0.3,0.05,0,
+loc_end_murray_lewis_size_40.csv,25000,100000,40,murray_lewis,10,0.1,0.1,0.01,0.01,1,0.3,0.05,0,
+loc_end_murray_lewis_size_40_smaller_beta.csv,30000,100000,30,murray_lewis,10,0.1,0.1,0.01,0.01,1,0.3,0.01,0,A=0.072819
+loc_end_murray_lewis_no_marks.csv,30000,100000,30,murray_lewis,10,0.1,0.1,0.01,0.01,1,0.3,0.05,0,A=0.1622579
+long_mark_duration.csv,39864,100000,30,murray_lewis,100,0.1,0.1,0.01,0.01,1,0.3,0.05,0,A=0.1622579
+strong_wolf_interaction_discomfort.csv,30000,100000,30,murray_lewis,10,1,1,0.01,0.01,1,0.3,0.05,0,A=0.1622579

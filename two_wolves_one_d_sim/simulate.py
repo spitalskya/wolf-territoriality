@@ -8,12 +8,12 @@ def run_simulation(simulation: Simulation) -> tuple[int, int]:
     return (simulation.wolf_a.den.get_location(), simulation.wolf_b.den.get_location())
 
 if __name__ == "__main__":
-    file_name = 'long_mark_duration' + '.csv'
+    file_name = 'strong_wolf_interaction_discomfort' + '.csv'
     size = 30
-    mark_duration = 100
+    mark_duration = 10
     discomfort_constants = {
-        'wolf': 0.1,
-        'den': 0.1,
+        'wolf': 1,
+        'den': 1,
         'mark': 0.01,
         'boundary': 0.01
     }
