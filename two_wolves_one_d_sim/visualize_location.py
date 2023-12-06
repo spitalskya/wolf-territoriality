@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 simulations = pd.read_csv('two_wolves_one_d_sim/simulated_data/simulations.csv')
 
-idx = 5
+idx = 6
 file = simulations['Name'][idx]
 size = simulations['AreaSize'][idx]
 
