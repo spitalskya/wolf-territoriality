@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 simulations = pd.read_csv('two_wolves_one_d_sim/simulated_data/simulations.csv')
 
-idx = 7
+idx = 2
 file = simulations['Name'][idx]
 size = simulations['AreaSize'][idx]
 
@@ -16,5 +16,5 @@ if idx == 7:
     plt.hist(data['C'], bins=size, range=(0, size), color='green', alpha=0.7)
 
 plt.title(file[:-4])
-# plt.savefig(file[:-4] + '.png')
-
+plt.savefig(file[:-4] + '.png')
+plt.show()

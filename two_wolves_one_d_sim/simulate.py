@@ -8,7 +8,7 @@ def run_simulation(simulation: Simulation) -> tuple[int, int]:
     return (simulation.wolf_a.den.get_location(), simulation.wolf_b.den.get_location())
 
 if __name__ == "__main__":
-    file_name = 'strong_wolf_interaction_discomfort' + '.csv'
+    file_name = 'no_marks' + '.csv'
     size = 30
     mark_duration = 10
     discomfort_constants = {
@@ -24,7 +24,7 @@ if __name__ == "__main__":
         'A': 0.1622579 
     }
 
-    runs = 30000
+    runs = 3000
     processes = 8
 
     with open(f'two_wolves_one_d_sim/{file_name}', 'w', encoding='utf-8') as file:

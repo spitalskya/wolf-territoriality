@@ -183,6 +183,7 @@ class Wolf(WolfInterface):
         """Looks one tile in direction
         if there is mark of another wolf, returns True
         """
+        return False
         tile: List[WolfInterface | MarkInterface | DenInterface] 
         tile = self.area.get_tile(self.location + direction)
         
