@@ -1,18 +1,25 @@
+import numpy as np
 from two_wolves_one_d_sim.interfaces import MarkInterface
 
 class Mark(MarkInterface):
-    duration: int
+    decay: float
     tag: str
     location: int
     
-    def __init__(self, tag: str, location: int, duration: int) -> None:
-        self.duration = duration
+    def __init__(self, tag: str, location: int, decay: float) -> None:
+        self.decay = decay
         self.location = location
         self.tag = tag
+        
+        self.intensity = 1
     
     def tick(self) -> bool:
-        self.duration -= 1
-        if self.duration == 0:
+        self.intensity *= np.e**(-self.decay)
+        
+        if (self.intensity < 10**(-4)):     # ? chcem to takto?
+            self.intensity = 0
+            
+        if self.intensity == 0:
             return True
         return False
     

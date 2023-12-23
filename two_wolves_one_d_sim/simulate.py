@@ -1,3 +1,4 @@
+import numpy as np
 import multiprocessing
 from two_wolves_one_d_sim.simulation import Simulation
 
@@ -8,9 +9,9 @@ def run_simulation(simulation: Simulation) -> tuple[int, int]:
     return (simulation.wolf_a.den.get_location(), simulation.wolf_b.den.get_location())
 
 if __name__ == "__main__":
-    file_name = 'no_marks' + '.csv'
+    file_name = 'test_tweaked' + '.csv'
     size = 30
-    mark_duration = 10
+    mark_decay = 0.5
     discomfort_constants = {
         'wolf': 0.1,
         'den': 0.1,
@@ -24,10 +25,10 @@ if __name__ == "__main__":
         'A': 0.1622579 
     }
 
-    runs = 3000
+    runs = 8
     processes = 8
 
-    with open(f'two_wolves_one_d_sim/{file_name}', 'w', encoding='utf-8') as file:
+    with open(f'two_wolves_one_d_sim/simulated_data/{file_name}', 'w', encoding='utf-8') as file:
         file.write('A,B\n')
     
     for i in range(runs // processes):
@@ -35,14 +36,14 @@ if __name__ == "__main__":
             outputs = pool.map(
                 run_simulation, [
                     Simulation(size=size, 
-                               mark_duration=mark_duration, 
+                               mark_decay=mark_decay, 
                                discomfort_constants = discomfort_constants,
                                murray_lewis_density_parameters=murray_lewis_density_parameters)
                     for _ in range(processes) 
                     ]
                 )
     
-        with open(f'two_wolves_one_d_sim/{file_name}', 'a', encoding='utf-8') as file:
+        with open(f'two_wolves_one_d_sim/simulated_data/{file_name}', 'a', encoding='utf-8') as file:
             for item in outputs:
                 a, b = item
                 file.write(f'{a},{b}\n')

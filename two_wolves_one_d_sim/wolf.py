@@ -16,7 +16,7 @@ class Wolf(WolfInterface):
     
     marks: List[MarkInterface]      # list of wolf's marks
     mark_tag: str                   # identifier of the mark
-    mark_duration: int              # how long will mark last
+    mark_decay: float               # how long will mark last
     
     discomfort: float               # level of discomfort due to interactions
     pressure: int                   # direction of more interactions
@@ -28,7 +28,7 @@ class Wolf(WolfInterface):
     murray_lewis_density_parameters: dict[str, float] | None
     
     def __init__(self, area: Area, tag: str, den_location: int,
-                 mark_duration: int, mark_tag: Optional[str] = None,
+                 mark_decay: float, mark_tag: Optional[str] = None,
                  discomfort_constants: dict[str, float] | None = None,
                  murray_lewis_density_parameters: dict[str, float] | None = None) -> None:
         
@@ -39,7 +39,7 @@ class Wolf(WolfInterface):
         
         self.marks = []
         self.mark_tag = self.tag.lower() if mark_tag is None else mark_tag
-        self.mark_duration = mark_duration
+        self.mark_decay = mark_decay
         
         self.den = Den(self.tag.lower(), den_location)
         self.location = self.den.get_location()
@@ -183,7 +183,6 @@ class Wolf(WolfInterface):
         """Looks one tile in direction
         if there is mark of another wolf, returns True
         """
-        return False
         tile: List[WolfInterface | MarkInterface | DenInterface] 
         tile = self.area.get_tile(self.location + direction)
         
@@ -198,7 +197,7 @@ class Wolf(WolfInterface):
     
     
     def mark(self) -> None:
-        mark: MarkInterface = Mark(self.mark_tag, self.location, self.mark_duration)
+        mark: MarkInterface = Mark(self.mark_tag, self.location, self.mark_decay)
         self.marks.append(mark)
         self.area.put_mark(mark, self.location)
     

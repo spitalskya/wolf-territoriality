@@ -8,7 +8,7 @@ class Simulation:
     area: Area
     
     def __init__(self, size: int, 
-                 mark_duration: int = 10,
+                 mark_decay: float,
                  discomfort_constants: dict[str, float] | None = None,
                  murray_lewis_density_parameters: dict[str, float] | None = None) -> None:
         
@@ -20,12 +20,12 @@ class Simulation:
             den_location_b = random.randint(1, size - 1)
         
         self.wolf_a = Wolf(area=self.area, tag='A', den_location=den_location_a, 
-                           mark_duration=mark_duration,
+                           mark_decay=mark_decay,
                            discomfort_constants=discomfort_constants,
                            murray_lewis_density_parameters=murray_lewis_density_parameters)
         
         self.wolf_b = Wolf(area=self.area, tag='B', den_location=den_location_b, 
-                           mark_duration=mark_duration,
+                           mark_decay=mark_decay,
                            discomfort_constants=discomfort_constants,
                            murray_lewis_density_parameters=murray_lewis_density_parameters)
     
