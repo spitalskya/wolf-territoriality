@@ -2,21 +2,22 @@ from __future__ import annotations
 from typing import List, Optional
 import random
 from math import e
-from two_wolves_one_d_sim.interfaces import WolfInterface, MarkInterface, DenInterface
-from two_wolves_one_d_sim.mark import Mark
+from two_wolves_one_d_sim.interfaces import WolfInterface, MarkInterface
 from two_wolves_one_d_sim.area import Area
-from two_wolves_one_d_sim.den import Den
 # from two_wolves_one_d_sim.murray_lewis_wolf_density.wolf_density_n_zero import get_step
 
 
 class Wolf(WolfInterface):
-    den: DenInterface               # location of the den
     location: int                   # location of the wolf
     tag: str                        # distinct tag of the wolf
+    
+    den_location: int               # location of the den
+    den_intensity_increase: float   # mark intensity increase in the den
     
     marks: List[MarkInterface]      # list of wolf's marks
     mark_tag: str                   # identifier of the mark
     mark_decay: float               # how long will mark last
+    mark_intensity_increase: float  # how much will intensity of a mark increase upon marking
     
     discomfort: float               # level of discomfort due to interactions
     pressure: int                   # direction of more interactions
@@ -28,22 +29,28 @@ class Wolf(WolfInterface):
     murray_lewis_density_parameters: dict[str, float] | None
     
     def __init__(self, area: Area, tag: str, den_location: int,
-                 mark_decay: float, mark_tag: Optional[str] = None,
-                 discomfort_constants: dict[str, float] | None = None,
-                 murray_lewis_density_parameters: dict[str, float] | None = None) -> None:
+                 mark_decay: float, mark_intensity_increase: float,
+                 den_intensity_increase: float,
+                 murray_lewis_density_parameters: dict[str, float] | None,
+                 mark_tag: Optional[str] = None,
+                 discomfort_constants: dict[str, float] | None = None) -> None:
         
         self.area = area
         self.tag = tag
         self.discomfort = 0
         self.pressure = 0
         
-        self.marks = []
         self.mark_tag = self.tag.lower() if mark_tag is None else mark_tag
         self.mark_decay = mark_decay
+        self.mark_intensity_increase = mark_intensity_increase
         
-        self.den = Den(self.tag.lower(), den_location)
-        self.location = self.den.get_location()
+        self.den_location = den_location
+        self.den_intensity_increase = den_intensity_increase
+        
+        self.location = self.den_location
         self.on_way_back = False
+        
+        self.mark(self.location)    # initial marking of the den
         
         if discomfort_constants:
             self.discomfort_constants = discomfort_constants
@@ -57,12 +64,10 @@ class Wolf(WolfInterface):
         
         self.murray_lewis_density_parameters = murray_lewis_density_parameters
 
-        self.area.put_den(self.den, self.den.get_location())
         self.area.put_wolf(self, self.location)
 
     def tick(self) -> None:
         """
-        zostarnú marks
         rozhodne sa direction
             ak je v nore, tak uz sa nevracia
             ak sa vracia, tak sa vracia
@@ -71,8 +76,6 @@ class Wolf(WolfInterface):
         ak sa zacne vracat, oznackuje
         pohne sa
         """
-        
-        self.tick_marks()
         
         direction: int
         if self.on_way_back:
@@ -99,13 +102,8 @@ class Wolf(WolfInterface):
         """
         if wolf_ahead or mark_ahead:
             self.on_way_back = True
-            self.mark()
+            self.mark(self.location)
             direction *= -1
-        
-        if not self.on_way_back and self.direction_towards_den(direction):
-            if self.decide_whether_to_return():
-                self.on_way_back = True
-                self.mark()
         
         new_location: int = self.location + direction
         if new_location < 0 or new_location >= len(self.area):
@@ -117,53 +115,34 @@ class Wolf(WolfInterface):
         self.area.move_wolf(self, self.location, new_location)
         self.location = new_location
         
-        if self.location == self.den.get_location():
+        if self.location == self.den_location:
+            self.mark(self.location)
             self.on_way_back = False
     
     
     def get_direction(self) -> int:
-        """Gets direction based on some generator"""
-        if self.murray_lewis_density_parameters is None:
-            return self.uniform_direction_generator()
+        """Gets direction based on murray lewis generator"""
         return self.murray_lewis_direction_generator()
-        
-    
-    def uniform_direction_generator(self) -> int:
-        """Returns uniform random direction"""
-        return random.choice([-1, 1])
-    
-    def linear_direction_generator(self) -> int:
-        if self.location == self.den.get_location():
-            return self.uniform_direction_generator()
-        
-        distance_from_den: int = abs(self.location - self.den.get_location())
-        if random.random() < distance_from_den/10:
-            return self.get_direction_towards_den()
-        return -self.get_direction_towards_den()
     
     def murray_lewis_direction_generator(self) -> int:
-        return get_step(self.location, self.den.get_location(), self.murray_lewis_density_parameters)
+        return get_step(self.location, self.den_location, self.murray_lewis_density_parameters)
     
     def direction_towards_den(self, direction: int) -> bool:
         """Returns whether given direction is towards den"""
-        dir_before: int = abs(self.location - self.den.get_location())
-        dir_after: int = abs((self.location + direction) - self.den.get_location())
+        dir_before: int = abs(self.location - self.den_location)
+        dir_after: int = abs((self.location + direction) - self.den_location)
         return dir_after < dir_before
     
     def get_direction_towards_den(self) -> int:
         """Gets direction towards den"""
         return 1 if self.direction_towards_den(1) else -1
     
-    def decide_whether_to_return(self) -> bool:
-        """Decides, if the wolf should return to den"""
-        return False
-    
     
     def look_for_wolves(self, direction: int) -> bool:
         """Looks one tile in direction dir
         if there is another wolf, returns True
         """
-        tile: List[WolfInterface | MarkInterface | DenInterface]
+        tile: List[WolfInterface | MarkInterface]
         tile = self.area.get_tile(self.location + 2 * direction)
         tile = self.area.get_tile(self.location + direction) if tile == [] else tile
         
@@ -172,65 +151,74 @@ class Wolf(WolfInterface):
                 self.discomfort += self.discomfort_constants['wolf']
                 self.pressure += direction
                 return True
-            if isinstance(item, DenInterface):
-                if item != self.den:
-                    self.discomfort += self.discomfort_constants['den']
-                    self.pressure += direction
-                    return True
+            
         return False
     
     def look_for_marks(self, direction: int) -> bool:
         """Looks one tile in direction
         if there is mark of another wolf, returns True
         """
-        tile: List[WolfInterface | MarkInterface | DenInterface] 
+        tile: List[WolfInterface | MarkInterface] 
         tile = self.area.get_tile(self.location + direction)
         
-        item: WolfInterface | MarkInterface | DenInterface
+        item: WolfInterface | MarkInterface
         for item in tile:
             if isinstance(item, MarkInterface):
-                if item.get_tag() != self.mark_tag:
-                    self.discomfort += self.discomfort_constants['mark']
-                    self.pressure += direction
-                    return True
+                # check if it is own mark
+                if item.get_tag() == self.mark_tag:
+                    return False
+
+                # if not own mark, decide, whether to return or overmark
+                if random.random() > item.get_intensity():
+                    self.mark(self.location + direction)
+                    return False
+                self.discomfort += self.discomfort_constants['mark']
+                self.pressure += direction
+                return True
         return False
     
     
-    def mark(self) -> None:
-        mark: MarkInterface = Mark(self.mark_tag, self.location, self.mark_decay)
-        self.marks.append(mark)
-        self.area.put_mark(mark, self.location)
-    
-    def tick_marks(self) -> None:
-        """Ticks all the marks, removes expired marks"""
-        mark: MarkInterface
-        for mark in self.marks:
-            if mark.tick():
-                self.area.remove_mark(mark, mark.get_location())
-                self.marks.remove(mark)
+    def mark(self, location: int) -> None:
+        tile: List[WolfInterface | MarkInterface] = self.area.get_tile(location)
+        for item in tile:
+            if not isinstance(item, MarkInterface):
+                continue
+            
+            # cancel previous markings, if they are not your own
+            if item.get_tag() != self.mark_tag:
+                item.increase_intensity(-item.get_intensity())
+                item.change_tag(self.mark_tag)
+            
+            if location == self.den_location:
+                item.increase_intensity(self.den_intensity_increase)
+            else:
+                item.increase_intensity(self.mark_intensity_increase)
     
     
     def move_den(self) -> None:
+        # ! REDO
+        
         if random.random() > self.discomfort:
             return
         
-        loc_before: int = self.den.get_location()
+        loc_before: int = self.den_location
         if self.pressure > 0:
             # pressure from the right
             if loc_before > 0:
-                self.area.move_den(self.den, loc_before, loc_before - 1)
-                self.den.set_location(loc_before - 1)
+                self.den_location = loc_before - 1
         elif self.pressure < 0:
             if loc_before < len(self.area) - 1:
-                self.area.move_den(self.den, loc_before, loc_before + 1)
-                self.den.set_location(loc_before + 1)
+                self.den_location = loc_before
+        
+        self.mark(self.den_location)
         self.discomfort = 0
         self.pressure = 0
     
     
     def __str__(self) -> str:
         return self.tag
-
+    
+    
 def probability_density(x, x_u, density_parameters):
     c_u = density_parameters['c_u']
     d_u = density_parameters['d_u']

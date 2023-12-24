@@ -9,7 +9,15 @@ class WolfInterface(ABC):
 class MarkInterface(ABC):
     
     @abstractmethod
-    def tick(self) -> bool:
+    def tick(self) -> None:
+        pass
+    
+    @abstractmethod
+    def increase_intensity(self, intensity: float) -> None:
+        pass
+    
+    @abstractmethod
+    def get_intensity(self) -> float:
         pass
     
     @abstractmethod
@@ -19,13 +27,7 @@ class MarkInterface(ABC):
     @abstractmethod
     def get_location(self) -> int:
         pass
-
-class DenInterface(ABC):
     
     @abstractmethod
-    def get_location(self) -> int:
-        pass
-    
-    @abstractmethod
-    def set_location(self, loc: int) -> None:
+    def change_tag(self, tag: str) -> None:
         pass

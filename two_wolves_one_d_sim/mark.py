@@ -11,23 +11,29 @@ class Mark(MarkInterface):
         self.location = location
         self.tag = tag
         
-        self.intensity = 1
+        self.intensity = 0
     
-    def tick(self) -> bool:
+    def increase_intensity(self, intensity: float) -> None:
+        self.intensity += intensity
+    
+    def get_intensity(self) -> float:
+        return self.intensity
+    
+    def tick(self) -> None:
         self.intensity *= np.e**(-self.decay)
         
         if (self.intensity < 10**(-4)):     # ? chcem to takto?
             self.intensity = 0
-            
-        if self.intensity == 0:
-            return True
-        return False
-    
+            self.tag = ""    
+        
     def get_tag(self) -> str:
         return self.tag
     
     def get_location(self) -> int:
         return self.location
+    
+    def change_tag(self, tag: str) -> None:
+        self.tag = tag
     
     def __str__(self) -> str:
         return '.'

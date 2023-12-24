@@ -6,12 +6,14 @@ from two_wolves_one_d_sim.simulation import Simulation
 def run_simulation(simulation: Simulation) -> tuple[int, int]:
     for _ in range(100000):
         simulation.tick()
-    return (simulation.wolf_a.den.get_location(), simulation.wolf_b.den.get_location())
+    return (simulation.wolf_a.den_location, simulation.wolf_b.den_location)
 
 if __name__ == "__main__":
     file_name = 'test_tweaked' + '.csv'
     size = 30
-    mark_decay = 0.5
+    mark_decay = 0.1
+    mark_intensity_increase = 1
+    den_intensity_increase = 5 * mark_intensity_increase
     discomfort_constants = {
         'wolf': 0.1,
         'den': 0.1,
@@ -37,6 +39,8 @@ if __name__ == "__main__":
                 run_simulation, [
                     Simulation(size=size, 
                                mark_decay=mark_decay, 
+                               mark_intensity_increase=mark_intensity_increase,
+                               den_intensity_increase=den_intensity_increase,
                                discomfort_constants = discomfort_constants,
                                murray_lewis_density_parameters=murray_lewis_density_parameters)
                     for _ in range(processes) 
