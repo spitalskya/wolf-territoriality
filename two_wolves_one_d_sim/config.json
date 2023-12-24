@@ -1,0 +1,22 @@
+{
+    "runs": 16,
+    "processes": 8,
+
+    "file_name": "test_tweaked.csv",
+    
+    "size" : 30,
+    "mark_decay" : 0.4,
+    "mark_intensity_increase" : 1,
+    "den_intensity_increase" : 5,
+    "discomfort_constants" : {
+        "wolf": 0.1,
+        "mark": 0.01,
+        "boundary": 0.01
+    },
+    "murray_lewis_density_parameters" : {
+        "c_u": 1,
+        "d_u": 0.3,
+        "beta": 0.05,
+        "A": 0.1622579 
+    }
+}

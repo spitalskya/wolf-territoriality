@@ -36,4 +36,4 @@ class Mark(MarkInterface):
         self.tag = tag
     
     def __str__(self) -> str:
-        return '.'
+        return f'({self.tag}, {round(self.intensity, 2)})'

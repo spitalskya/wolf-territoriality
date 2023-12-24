@@ -15,3 +15,5 @@
 ### Exp mark decay, movement by time
 - marks
     - exponential decay
+- den
+    - reworked into mark, greater intensity increase

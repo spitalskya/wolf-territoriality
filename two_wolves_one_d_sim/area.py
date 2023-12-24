@@ -46,13 +46,7 @@ class Area:
     def __str__(self) -> str:
         state: str = ''
         for tile in self.area:
-            if tile == [] or all(isinstance(item, MarkInterface) for item in tile):
-                state += '_'
-            else:
-                for obj in tile:
-                    if isinstance(obj, MarkInterface): 
-                        continue
-                    state += str(obj)
-                    break
+            for obj in tile:
+                state += str(obj)
             state += '|'
         return state[:-1]

@@ -165,7 +165,7 @@ class Wolf(WolfInterface):
         for item in tile:
             if isinstance(item, MarkInterface):
                 # check if it is own mark
-                if item.get_tag() == self.mark_tag:
+                if item.get_tag() == self.mark_tag or item.get_tag() == "":
                     return False
 
                 # if not own mark, decide, whether to return or overmark
