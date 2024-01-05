@@ -22,7 +22,7 @@ class Mark(MarkInterface):
     def tick(self) -> None:
         self.intensity *= np.e**(-self.decay)
         
-        if (self.intensity < 10**(-4)):     # ? chcem to takto?
+        if self.intensity < 10**(-4):     # ? chcem to takto?
             self.intensity = 0
             self.tag = ""    
         

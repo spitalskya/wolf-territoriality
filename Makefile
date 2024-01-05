@@ -1,9 +1,6 @@
 sim: FORCE
 	python -m two_wolves_one_d_sim.simulate
 
-sim3: FORCE
-	python -m two_wolves_one_d_sim.simulate_three_wolves
-
 sim-display: FORCE
 	python -m two_wolves_one_d_sim.simulate_display_steps
 

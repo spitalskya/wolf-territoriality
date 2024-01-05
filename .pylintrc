@@ -1,2 +1,2 @@
 [MASTER]
-disable = missing-module-docstring, missing-class-docstring, missing-function-docstring, too-few-public-methods, trailing-whitespace, too-many-instance-attributes
+disable = missing-module-docstring, missing-class-docstring, missing-function-docstring, too-few-public-methods, trailing-whitespace, too-many-instance-attributes, too-many-arguments

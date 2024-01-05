@@ -1,6 +1,6 @@
-import numpy as np
 import json
 import multiprocessing
+import numpy as np
 from two_wolves_one_d_sim.simulation import Simulation
 
 
