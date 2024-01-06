@@ -21,10 +21,10 @@ if __name__ == "__main__":
     murray_lewis_density_parameters = config["murray_lewis_density_parameters"]
 
     run_simulation(
-                    Simulation(size=size, 
-                               mark_decay=mark_decay, 
-                               mark_intensity_increase=mark_intensity_increase,
-                               den_intensity_increase=den_intensity_increase,
-                               discomfort_constants = discomfort_constants,
-                               murray_lewis_density_parameters=murray_lewis_density_parameters)
-                )
+        Simulation(size=size, 
+                   mark_decay=mark_decay, 
+                   mark_intensity_increase=mark_intensity_increase,
+                   den_intensity_increase=den_intensity_increase,
+                   discomfort_constants = discomfort_constants,
+                   murray_lewis_density_parameters=murray_lewis_density_parameters)
+        )

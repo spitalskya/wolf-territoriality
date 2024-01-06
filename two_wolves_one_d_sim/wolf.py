@@ -13,6 +13,7 @@ class Wolf(WolfInterface):
     
     den_location: int               # location of the den
     den_intensity_increase: float   # mark intensity increase in the den
+    time_from_last_den_visit: int   # how many ticks since last visit of the den
     
     marks: List[MarkInterface]      # list of wolf's marks
     mark_tag: str                   # identifier of the mark
@@ -46,6 +47,7 @@ class Wolf(WolfInterface):
         
         self.den_location = den_location
         self.den_intensity_increase = den_intensity_increase
+        self.time_from_last_den_visit = 0
         
         self.location = self.den_location
         self.on_way_back = False
@@ -104,6 +106,8 @@ class Wolf(WolfInterface):
             self.on_way_back = True
             self.mark(self.location)
             direction *= -1
+        elif self.decide_whether_to_mark():
+            self.mark(self.location)
         
         new_location: int = self.location + direction
         if new_location < 0 or new_location >= len(self.area):
@@ -114,10 +118,12 @@ class Wolf(WolfInterface):
             
         self.area.move_wolf(self, self.location, new_location)
         self.location = new_location
+        self.time_from_last_den_visit += 1
         
         if self.location == self.den_location:
             self.mark(self.location)
             self.on_way_back = False
+            self.time_from_last_den_visit = 0
     
     
     def get_direction(self) -> int:
@@ -155,9 +161,6 @@ class Wolf(WolfInterface):
         return False
     
     def look_for_marks(self, direction: int) -> bool:
-        """Looks one tile in direction
-        if there is mark of another wolf, returns True
-        """
         tile: List[WolfInterface | MarkInterface] 
         tile = self.area.get_tile(self.location + direction)
         
@@ -177,6 +180,10 @@ class Wolf(WolfInterface):
                 return True
         return False
     
+    def decide_whether_to_mark(self) -> bool:
+        if random.random() < 1/(1 + e**(-1*(self.time_from_last_den_visit - 5))):
+            return True
+        return False
     
     def mark(self, location: int) -> None:
         tile: List[WolfInterface | MarkInterface] = self.area.get_tile(location)

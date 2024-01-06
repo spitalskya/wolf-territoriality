@@ -46,7 +46,9 @@ class Area:
     def __str__(self) -> str:
         state: str = ''
         for tile in self.area:
+            tmp = ''
             for obj in tile:
-                state += str(obj)
+                tmp += str(obj)
+            state += f'{tmp:<{12}}'
             state += '|'
         return state[:-1]
